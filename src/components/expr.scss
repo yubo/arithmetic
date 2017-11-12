@@ -1,0 +1,52 @@
+html{
+  font-family: "Microsoft YaHei" !important;
+}
+
+.cb{
+  clear: both;
+}
+
+.expr-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.expr-row {
+  display: inline;
+  font-size: 28px;
+}
+
+.expr-row-cur {
+  display: inline;
+  font-size: 28px;
+  background: #ecf6fd;
+}
+
+.expr-items {
+  display: flex;
+  flex-direction: row;
+}
+
+.expr-item-str {
+  width: 60%;
+}
+
+.expr-item {
+  width: 10%;
+  text-align: right;
+}
+
+.expr-item-ok {
+  background: #5bb75b;
+}
+
+.expr-item-want {
+  color: #fff;
+  background: #5bb75b;
+}
+
+.expr-item-wrong {
+  color: #fff;
+  background: #bd362f;
+}
+
