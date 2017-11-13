@@ -16,7 +16,6 @@ export class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      level: 1,
       cur: 0,
       ok: 0,
       total: TOTAL,
@@ -39,13 +38,13 @@ export class App extends React.Component {
       this.setState({ time: new Date() })
   }
 
-  resetCounter = (level) => {
+  resetCounter = (total) => {
     this.setState({
       cur: 0,
       ok: 0,
-      level: level,
       start_time: new Date(),
       stop: false,
+      total: total,
     })
   }
 
@@ -53,7 +52,7 @@ export class App extends React.Component {
     this.setState({cur, ok})
   }
 
-  doneCounter = (total) => {
+  doneCounter = () => {
     this.setState({
       stop: true,
     })
@@ -71,8 +70,6 @@ export class App extends React.Component {
     'start': ['s'],
     'restart': ['r'],
     'stop': ['esc'],
-    'level+': ['+', 'pageup'],
-    'level-': ['-', 'pagedown'],
     'help': ['?', 'h'],
   }
 
@@ -107,7 +104,6 @@ export class App extends React.Component {
                 <div className='header-counter'> 正确率： {this.state.ok + '/' + this.state.cur} </div>
                 <div className='header-counter'> 耗时： {time.toFixed(2) + 's'} </div>
                 <div className='header-counter'> 平均耗时： {this.state.cur > 0 ? (time / this.state.cur).toFixed(2) + 's' : 'N/A'} </div>
-                <div className='header-counter' style={{textAlign:'right'}}> 难度： {'Lv.' + this.state.level} </div>
               </div>
             </div>
           </div>
@@ -115,7 +111,6 @@ export class App extends React.Component {
           <div className="content-container container">
             <div className="main-content">
               <Expr 
-                level={this.state.level}
                 cur={this.state.cur}
                 ok={this.state.ok}
                 total={this.state.total}

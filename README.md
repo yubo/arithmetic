@@ -1,5 +1,7 @@
 # 给小朋友做的算术练习
 
+[demo](http://www.yubo.org/ss.html)
+
 #### install
 
 ```

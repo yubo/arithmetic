@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { HotKeys } from 'react-hotkeys'
 import { fromJS } from 'immutable'
+import { Select } from 'antd';
+const { Option, OptGroup } = Select;
 import './expr.scss'
 
 const OP_PLUS = -1
@@ -14,17 +16,19 @@ class Expr extends React.Component {
     super(props)
     this.state ={
       expressions: fromJS([{
-        str: '1+1',
+        expr: '1+1',
         value: 2,
         options: [4,2,5,1], /* up, right, down, left */
         idx: 1,
-        input_idx: -1,
+        inputIdx: -1,
       }]),
+      max: 10,
+      maxResult: 20,
+      opNum: 1,
     }
   }
 
   static propTypes = {
-    level: PropTypes.number.isRequired,
     cur: PropTypes.number.isRequired,
     ok: PropTypes.number.isRequired,
     total: PropTypes.number.isRequired,
@@ -34,7 +38,7 @@ class Expr extends React.Component {
   }
 
   componentDidMount() {
-    this.reset(this.props.level)
+    this.reset(this.state.opNum, this.state.max, this.state.maxResult, this.props.total)
   }
 
   /* [l, u) */
@@ -42,83 +46,64 @@ class Expr extends React.Component {
     return Math.floor(Math.random() * (u-l)) + l
   }
 
-  getNum = () => {
-    const  level = (this.props.level - 1) & 3
-    console.log()
-    switch (level) {
-      case 0:
-        return this.rand(6, 1)
-      case 1:
-        return this.rand(11, 1)
-      case 2:
-        return this.rand(16, 1)
-      case 3:
-        return this.rand(21, 1)
-      default: 
-        return this.rand(6, 1)
+  getNum = (max, max1) => {
+    console.log('----', max, this.state.max)
+    if (max > max1) {
+      max = max1
     }
+    return this.rand(max, 1)
   }
 
   getOp = () => {
-    return -this.rand(3, 1)
+    return -this.rand(4, 1)
   }
 
+
+
   /* expression generate */
-  expr_gen = (l) => {
+  expr_gen = (l, maxResult, max) => {
     if (l == 0) {
-      return [this.getNum()]
+      const value  = this.getNum(maxResult, max)
+      return {value, expr:value.toString()}
     }
 
     if (l == 1) {
-      return [this.getOp(), this.getNum(), this.getNum()]
+      const left = this.getNum(maxResult, max)
+      const op = this.getOp()
+      let right
+      switch (op) {
+        case OP_PLUS:
+          right = this.getNum(maxResult-left, max)
+          return {value: left + right, expr: '(' + left + ' + ' + right + ')'}
+        case OP_SUB:
+          right = this.getNum(left, max)
+          return {value: left - right, expr: '(' + left + ' - ' + right + ')'}
+        case OP_MULT:
+          right = this.getNum(maxResult / left, max)
+          return {value: left * right, expr: '(' + left + ' * ' + right + ')'}
+        case OP_DIV:
+          return {}
+      }
     }
 
     const n = this.rand(l) 
-
-    return [this.getOp(), ...this.expr_gen(n), ...this.expr_gen(l-n-1)]
-
-  }
-
-  expr_fmt = (e) => {
-    const v = e.shift()
-
-    if (v >= 0)
-      return {
-        str: v.toString(),
-        value: v,
-      }
-
-    const left = this.expr_fmt(e)
-    const right = this.expr_fmt(e)
-
-    switch (v)
-    {
-      case OP_PLUS:
-        return {
-          str: '('+ left.str + ' + ' + right.str +')',
-          value: left.value + right.value,
-        }
-      case OP_SUB:
-        return {
-          str: '('+ left.str + ' - ' + right.str +')',
-          value: left.value - right.value,
-        }
-      case OP_MULT:
-        return {
-          str: '('+ left.str + ' * ' + right.str +')',
-          value: left.value * right.value,
-        }
-      case OP_DIV:
-        return {
-          str: '('+ left.str + ' / ' + right.str +')',
-          value: left.value / right.value,
-        }
-      return {str:'', value: 0}
+    const left = this.expr_gen(n, maxResult, max)
+    const op = this.getOp()
+    let right
+    switch (op) {
+       case OP_PLUS:
+          right = this.expr_gen(l-n-1, maxResult-left.value, max)
+          return {value: left.value + right.value, expr: '(' + left.expr + ' + ' + right.expr + ')'}
+        case OP_SUB:
+          right = this.expr_gen(l-n-1, left.value, max)
+          return {value: left.value - right.value, expr: '(' + left.expr + ' - ' + right.expr + ')'}
+        case OP_MULT:
+          right = this.expr_gen(l-n-1, maxResult / left.value, max)
+          return {value: left.value * right.value, expr: '(' + left.expr + ' * ' + right.expr + ')'}
+        case OP_DIV:
+          return {}
     }
-    return '('+left+operation+right+')'
   }
-
-
 
   expr_fill_options = (e) => {
     let options = [e.value, 0, 0, 0]
@@ -139,23 +124,23 @@ class Expr extends React.Component {
 
     e.idx = idx
     e.options = options
-    e.input_idx = -1
+    e.inputIdx = -1
     return e
   }
 
 
-  reset = (level) => {
-    // check this.state.level and set expression / up / right / down / left
-    const total = this.props.total
-    const op_number = ((level - 1) >> 2) + 1
+  reset = (opNum, max, maxResult, total) => {
     let expressions = []
 
-    this.props.resetCounter(level)
+    this.props.resetCounter(total)
 
     for (let i = 0; i < total; i++) {
-      expressions.push(this.expr_fill_options(this.expr_fmt(this.expr_gen(op_number))))
+      expressions.push(this.expr_fill_options(this.expr_gen(opNum, max, maxResult)))
     }
     this.setState({
+      opNum,
+      max,
+      maxResult,
       expressions: fromJS(expressions),
     })
   }
@@ -178,7 +163,7 @@ class Expr extends React.Component {
     }
 
     this.setState({
-      expressions: this.state.expressions.setIn([cur, 'input_idx'], idx),
+      expressions: this.state.expressions.setIn([cur, 'inputIdx'], idx),
     })
 
     cur = cur + 1
@@ -203,19 +188,12 @@ class Expr extends React.Component {
     },
     'restart': () => {
       console.log('restart')
-      this.reset(this.props.level)
+      this.reset(this.state.opNum, this.state.max, this.state.maxResult, this.props.total)
     },
     'stop': () => {
       console.log('stop')
       this.props.doneCounter()
     },
-    'level+': () => {
-      this.reset(this.props.level + 1)
-    },
-    'level-': () => {
-      const level = this.props.level - 1  > 0 ? this.props.level - 1 : 1;
-      this.reset(level)
-    }
   }
 
   options_css = (n, want, got, idx, cur_idx) => {
@@ -234,12 +212,25 @@ class Expr extends React.Component {
     } 
   }
 
+  onChangeMax = (max) => {
+    this.reset(this.state.opNum, parseInt(max), this.state.maxResult, this.props.total)
+  }
+  onChangeMaxResult = (maxResult) => {
+    this.reset(this.state.opNum, this.state.max, parseInt(maxResult), this.props.total)
+  }
+  onChangeOpNum = (opNum) => {
+    this.reset(parseInt(opNum), this.state.max, this.state.maxResult, this.props.total)
+  }
+  onChangeTotal = (total) => {
+    this.reset(htis.state.opNum, this.state.max, this.state.maxResult, parseIn(total))
+  }
+
   render () {
     const cur = this.props.cur
     const total = this.props.total
     let low = cur < 5 ? 0 : cur - 5
     const upper =  low + 10 > total ? total : low + 10
-    low  =  upper - 10 > 0 ? upper - 10 : low
+    low  =  upper - 10 >= 0 ? upper - 10 : low
 
     const cur_index = cur - low
     const e0 = this.state.expressions.toJS()
@@ -248,17 +239,60 @@ class Expr extends React.Component {
     let exprs = e1.map((item, index) => 
       <div key={index} className={index == cur_index ? 'expr-row-cur' : 'expr-row'}>
         <div className='expr-items'>
-          <div className='expr-item-str'> {item.str} </div>
-          <div className={this.options_css(0, item.idx, item.input_idx, index, cur_index)}> {item.options[0]} </div>
-          <div className={this.options_css(1, item.idx, item.input_idx, index, cur_index)}> {item.options[1]} </div>
-          <div className={this.options_css(2, item.idx, item.input_idx, index, cur_index)}> {item.options[2]} </div>
-          <div className={this.options_css(3, item.idx, item.input_idx, index, cur_index)}> {item.options[3]} </div>
+          <div className='expr-item-str'> {item.expr} </div>
+          <div className={this.options_css(0, item.idx, item.inputIdx, index, cur_index)}
+            onClick={index == cur_index ? ()=>{this.input(0)} : () => {}}> {item.options[0]} </div>
+          <div className={this.options_css(1, item.idx, item.inputIdx, index, cur_index)}
+            onClick={index == cur_index ? ()=>{this.input(1)} : () => {}}> {item.options[1]} </div>
+          <div className={this.options_css(2, item.idx, item.inputIdx, index, cur_index)}
+            onClick={index == cur_index ? ()=>{this.input(2)} : () => {}}> {item.options[2]} </div>
+          <div className={this.options_css(3, item.idx, item.inputIdx, index, cur_index)}
+            onClick={index == cur_index ? ()=>{this.input(3)} : () => {}}> {item.options[3]} </div>
         </div>
       </div>
     )
     return (
       <HotKeys handlers={this.keyHandlers} style={{outline:'none', height:'100vh'}}>
         <div>
+          <div className='expr-options' style={{display:'flex', justifyContent:'space-between'}}>
+            <div>
+              <span style={{marginRight:'5px'}}>算子最大值</span>
+              <Select defaultValue={this.state.max.toString()} onChange={this.onChangeMax}>
+                <Option value="5"> 5 </Option>
+                <Option value="10"> 10 </Option>
+                <Option value="15"> 15 </Option>
+                <Option value="20"> 20 </Option>
+                <Option value="40"> 40 </Option>
+              </Select>
+            </div>
+            <div>
+              <span style={{marginRight:'5px'}}>结果最大值</span>
+              <Select defaultValue={this.state.maxResult.toString()} onChange={this.onChangeMaxResult}>
+                <Option value="10"> 10 </Option>
+                <Option value="20"> 20 </Option>
+                <Option value="40"> 40 </Option>
+              </Select>
+            </div>
+            <div>
+              <span style={{marginRight:'5px'}}>操作符个数</span>
+              <Select defaultValue={this.state.opNum.toString()} onChange={this.onChangeOpNum}>
+                <Option value="1"> 1 </Option>
+                <Option value="2"> 2 </Option>
+                <Option value="3"> 3 </Option>
+                <Option value="4"> 4 </Option>
+                <Option value="5"> 5 </Option>
+              </Select>
+            </div>
+            <div>
+              <span style={{marginRight:'5px'}}>total</span>
+              <Select defaultValue={this.props.total.toString()} onChange={this.onChangeTotal}>
+                <Option value="10"> 10 </Option>
+                <Option value="20"> 20 </Option>
+                <Option value="50"> 50 </Option>
+                <Option value="100"> 100 </Option>
+              </Select>
+            </div>
+          </div>
           <div className='expr-rows'>
             <div className='expr-row'>
               <div className='expr-items'>
