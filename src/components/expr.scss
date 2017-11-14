@@ -30,6 +30,7 @@ html{
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+  margin-bottom: 10px;
 }
 
 .expr-row-cur {
@@ -43,7 +44,7 @@ html{
 
 .expr-item {
   width: 20%;
-  text-align: right;
+  text-align: center;
   flex: auto;
 }
 
@@ -61,3 +62,17 @@ html{
   background: #bd362f;
 }
 
+.play-ico {
+  width: 100%;
+  height: 100vh;
+  positon:relative;
+}
+
+.play-ico .anticon{
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-left:-50px;
+  margin-top:-50px;
+  font-size: 100px;
+}

@@ -10,7 +10,7 @@ import { HotKeys } from 'react-hotkeys'
 import { Modal } from 'antd'
 import './app.scss'
 
-const TOTAL = 100
+const TOTAL = 20
 
 export class App extends React.Component {
   constructor(props) {
@@ -21,12 +21,12 @@ export class App extends React.Component {
       total: TOTAL,
       start_time: new Date(),
       time: new Date(),
-      stop: false,
+      stop: true,
     }
   }
 
   componentDidMount() {
-    this.timer = setInterval( () => this.tick(), 100);
+    //this.timer = setInterval( () => this.tick(), 100);
   }
 
   componentWillUnmount() {
@@ -38,24 +38,28 @@ export class App extends React.Component {
       this.setState({ time: new Date() })
   }
 
-  resetCounter = (total) => {
+  restart = () => {
     this.setState({
       cur: 0,
       ok: 0,
       start_time: new Date(),
       stop: false,
-      total: total,
     })
+  }
+
+  stop = () => {
+    this.setState({
+      stop: true,
+      time: new Date(),
+    })
+  }
+
+  setTotal = (total) => {
+    this.setState({total})
   }
 
   setCounter = (cur, ok) => {
     this.setState({cur, ok})
-  }
-
-  doneCounter = () => {
-    this.setState({
-      stop: true,
-    })
   }
 
   static propTypes = {
@@ -98,24 +102,26 @@ export class App extends React.Component {
       <HotKeys focused={true} attach={window} keyMap={this.keyMap} handlers={this.keyHandlers} style={{outline:'none'}}>
         <div className="core-container">
           <div className='header'>
-            <div className='header container'>
+            <div className='container header'>
               <div className='header-counter'> 已完成： {this.state.cur + '/' + this.state.total} </div>
               <div className='header-counter'> 正确率： {this.state.ok + '/' + this.state.cur} </div>
-              <div className='header-counter'> 耗时： {time.toFixed(2) + 's'} </div>
-              <div className='header-counter'> 平均耗时： {this.state.cur > 0 ? (time / this.state.cur).toFixed(2) + 's' : 'N/A'} </div>
+              <div className='header-counter'> 耗时： {this.state.stop ? time.toFixed(2) + 's' : '--'} </div>
+              <div className='header-counter'> 平均耗时： {this.state.stop ? (this.state.cur > 0 ? (time / this.state.cur).toFixed(2) + 's' : 'N/A') : '--'} </div>
             </div>
           </div>
 
           <div className="content-container container">
             <div className="main-content">
               <Expr 
-                cur={this.state.cur}
-                ok={this.state.ok}
-                total={this.state.total}
-                resetCounter={this.resetCounter}
-                setCounter={this.setCounter}
-                doneCounter={this.doneCounter}
-                />
+                  cur={this.state.cur}
+                  ok={this.state.ok}
+                  stop={this.state.stop}
+                  total={this.state.total}
+                  setTotal={this.setTotal}
+                  restart={this.restart}
+                  stopHandle={this.stop}
+                  setCounter={this.setCounter}
+                  />
             </div>
           </div>
         </div>
