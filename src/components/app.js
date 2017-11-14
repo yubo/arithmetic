@@ -64,9 +64,9 @@ export class App extends React.Component {
    
   keyMap = {
     'option1': ['up', 'j', '1'],
-    'option2': ['down', 'k', '2'],
-    'option3': ['left', 'l', '3'],
-    'option4': ['right', ';', '4'],
+    'option2': ['right', 'k', '2'],
+    'option3': ['down', 'l', '3'],
+    'option4': ['left', ';', '4'],
     'start': ['s'],
     'restart': ['r'],
     'stop': ['esc'],
