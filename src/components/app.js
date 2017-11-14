@@ -97,14 +97,12 @@ export class App extends React.Component {
     return (
       <HotKeys focused={true} attach={window} keyMap={this.keyMap} handlers={this.keyHandlers} style={{outline:'none'}}>
         <div className="core-container">
-          <div className='header-rows'>
-            <div className='header-row1'>
-              <div className='header-row1 container'>
-                <div className='header-counter'> 已完成： {this.state.cur + '/' + this.state.total} </div>
-                <div className='header-counter'> 正确率： {this.state.ok + '/' + this.state.cur} </div>
-                <div className='header-counter'> 耗时： {time.toFixed(2) + 's'} </div>
-                <div className='header-counter'> 平均耗时： {this.state.cur > 0 ? (time / this.state.cur).toFixed(2) + 's' : 'N/A'} </div>
-              </div>
+          <div className='header'>
+            <div className='header container'>
+              <div className='header-counter'> 已完成： {this.state.cur + '/' + this.state.total} </div>
+              <div className='header-counter'> 正确率： {this.state.ok + '/' + this.state.cur} </div>
+              <div className='header-counter'> 耗时： {time.toFixed(2) + 's'} </div>
+              <div className='header-counter'> 平均耗时： {this.state.cur > 0 ? (time / this.state.cur).toFixed(2) + 's' : 'N/A'} </div>
             </div>
           </div>
 

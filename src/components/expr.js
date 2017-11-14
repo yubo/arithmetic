@@ -237,25 +237,23 @@ class Expr extends React.Component {
     const e1 = e0.slice(low , upper)
 
     let exprs = e1.map((item, index) => 
-      <div key={index} className={index == cur_index ? 'expr-row-cur' : 'expr-row'}>
-        <div className='expr-items'>
-          <div className='expr-item-str'> {item.expr} </div>
-          <div className={this.options_css(0, item.idx, item.inputIdx, index, cur_index)}
-            onClick={index == cur_index ? ()=>{this.input(0)} : () => {}}> {item.options[0]} </div>
-          <div className={this.options_css(1, item.idx, item.inputIdx, index, cur_index)}
-            onClick={index == cur_index ? ()=>{this.input(1)} : () => {}}> {item.options[1]} </div>
-          <div className={this.options_css(2, item.idx, item.inputIdx, index, cur_index)}
-            onClick={index == cur_index ? ()=>{this.input(2)} : () => {}}> {item.options[2]} </div>
-          <div className={this.options_css(3, item.idx, item.inputIdx, index, cur_index)}
-            onClick={index == cur_index ? ()=>{this.input(3)} : () => {}}> {item.options[3]} </div>
-        </div>
+      <div key={index} className={index == cur_index ? 'expr-row expr-row-cur' : 'expr-row'}>
+        <div className='expr-item-str'> {item.expr} </div>
+        <div className={this.options_css(0, item.idx, item.inputIdx, index, cur_index)}
+          onClick={index == cur_index ? ()=>{this.input(0)} : () => {}}> {item.options[0]} </div>
+        <div className={this.options_css(1, item.idx, item.inputIdx, index, cur_index)}
+          onClick={index == cur_index ? ()=>{this.input(1)} : () => {}}> {item.options[1]} </div>
+        <div className={this.options_css(2, item.idx, item.inputIdx, index, cur_index)}
+          onClick={index == cur_index ? ()=>{this.input(2)} : () => {}}> {item.options[2]} </div>
+        <div className={this.options_css(3, item.idx, item.inputIdx, index, cur_index)}
+          onClick={index == cur_index ? ()=>{this.input(3)} : () => {}}> {item.options[3]} </div>
       </div>
     )
     return (
-      <HotKeys handlers={this.keyHandlers} style={{outline:'none', height:'100vh'}}>
-        <div>
-          <div className='expr-options' style={{display:'flex', justifyContent:'space-between'}}>
-            <div>
+      <HotKeys className='expr-container' handlers={this.keyHandlers} style={{outline:'none', height:'100vh'}}>
+        <div className='expr-container'>
+          <div className='expr-options'>
+            <div className='expr-option'>
               <span style={{marginRight:'5px'}}>算子最大值</span>
               <Select defaultValue={this.state.max.toString()} onChange={this.onChangeMax}>
                 <Option value="5"> 5 </Option>
@@ -265,7 +263,7 @@ class Expr extends React.Component {
                 <Option value="40"> 40 </Option>
               </Select>
             </div>
-            <div>
+            <div className='expr-option'>
               <span style={{marginRight:'5px'}}>结果最大值</span>
               <Select defaultValue={this.state.maxResult.toString()} onChange={this.onChangeMaxResult}>
                 <Option value="10"> 10 </Option>
@@ -273,7 +271,7 @@ class Expr extends React.Component {
                 <Option value="40"> 40 </Option>
               </Select>
             </div>
-            <div>
+            <div className='expr-option'>
               <span style={{marginRight:'5px'}}>操作符个数</span>
               <Select defaultValue={this.state.opNum.toString()} onChange={this.onChangeOpNum}>
                 <Option value="1"> 1 </Option>
@@ -283,7 +281,7 @@ class Expr extends React.Component {
                 <Option value="5"> 5 </Option>
               </Select>
             </div>
-            <div>
+            <div className='expr-option'>
               <span style={{marginRight:'5px'}}>total</span>
               <Select defaultValue={this.props.total.toString()} onChange={this.onChangeTotal}>
                 <Option value="10"> 10 </Option>
@@ -295,13 +293,11 @@ class Expr extends React.Component {
           </div>
           <div className='expr-rows'>
             <div className='expr-row'>
-              <div className='expr-items'>
-                <div className='expr-item-str expr-item-title'> 算术式 </div>
-                <div className='expr-item expr-item-title'> 选项1  </div>
-                <div className='expr-item expr-item-title'> 选项2  </div>
-                <div className='expr-item expr-item-title'> 选项3  </div>
-                <div className='expr-item expr-item-title'> 选项4  </div>
-              </div>
+              <div className='expr-item-str'> 算术式 </div>
+              <div className='expr-item'> 选项1  </div>
+              <div className='expr-item'> 选项2  </div>
+              <div className='expr-item'> 选项3  </div>
+              <div className='expr-item'> 选项4  </div>
             </div>
             {exprs}
           </div>

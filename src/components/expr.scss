@@ -2,38 +2,49 @@ html{
   font-family: "Microsoft YaHei" !important;
 }
 
-.cb{
-  clear: both;
+.expr-container {
+  flex: auto;
+}
+
+.expr-options {
+  display: flex;
+  justify-content: space-between;
+}
+
+.expr-option {
+  width: 25%;
+  flex: auto;
+  font-size: 1.0em;
+  margin-right: auto;
+  margin-left: auto;
+  flex-wrap: nowrap;
 }
 
 .expr-rows {
   display: flex;
   flex-direction: column;
+  font-size: 1.8em;
 }
 
 .expr-row {
-  display: inline;
-  font-size: 28px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
 
 .expr-row-cur {
-  display: inline;
-  font-size: 28px;
   background: #ecf6fd;
 }
 
-.expr-items {
-  display: flex;
-  flex-direction: row;
-}
-
 .expr-item-str {
-  width: 60%;
+  width: 50%;
+  flex: auto;
 }
 
 .expr-item {
-  width: 10%;
+  width: 20%;
   text-align: right;
+  flex: auto;
 }
 
 .expr-item-ok {

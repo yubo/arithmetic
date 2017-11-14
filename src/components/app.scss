@@ -7,57 +7,57 @@
 .content-container {
   flex-grow: 1;
   display: flex;
-  padding: 10px 20px;
+  padding: 10px 0px;
+  flex: auto;
 }
 
 .main-content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  flex: auto;
   //background: #ccc;
 }
 
-.header-rows {
-  display: flex;
-  flex-direction: column;
-  height: 40px;
-  width: 100%;
-  flex-shrink: 0;
-}
-
-.header-row1 {
+.header {
   display: flex;
   justify-content: space-between;
-  font-size: 15px;
+  flex-wrap: nowrap;
+  font-size: 1.0em;
   box-sizing: border-box;
-  padding: 0 20px;
-  height: 40px;
-  line-height: 40px;
   background: #333;
   color: #b0b0b0;
 }
 
 .container {
-  width: 1226px;
   margin-right: auto;
   margin-left: auto;
+  width: 100%;
+  font-size: 70%;
+  @media (min-width:240px) and (max-width:320px){
+    width: 240px;
+  }
+  @media (min-width:320px) and (max-width:540px){
+    width: 320px;
+  }
+  @media (min-width:540px) and (max-width:720px){
+    width: 540px;
+  }
+  @media (min-width:720px) and (max-width:1200px){
+    width: 720px;
+  }
+  @media (min-width:1200px) {
+    width: 1200px;
+    font-size: 100%;
+  }
 }
 
-.header-row1 .header-link {
-  color: #b0b0b0;
-}
-
-.header-row1 .header-counter {
-  font-size: 18px;
+.header .header-counter {
+  font-size: 1.0em;
   height: 40px;
   line-height: 40px;
   margin-right: 10px;
   width: 20%;
-}
-
-.row1-left {
-  height: 40px;
-  line-height: 40px;
 }
 
 .logo {
