@@ -180,10 +180,6 @@ class Expr extends React.Component {
       return
     }
 
-    if (cur + 1 == total) {
-      this.stop()
-    }
-
     this.setState({
       expressions: this.state.expressions.setIn([cur, 'inputIdx'], idx),
     })
@@ -193,6 +189,10 @@ class Expr extends React.Component {
     }
     cur = cur + 1
     this.props.setCounter(cur, ok)
+
+    if (cur == total) {
+      this.stop()
+    }
   }
 
   keyHandlers = {
