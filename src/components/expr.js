@@ -146,10 +146,12 @@ class Expr extends React.Component {
     this.setState({expressions: fromJS(expressions)})
   }
 
-  stop = () => {
+  stop = (cur) => {
+
     this.props.stopHandle()
 
-    const cur = this.props.cur
+    if (!cur)
+      cur = this.props.cur
     const total = this.props.total
     const content = this.state.expressions.toJS().map((item, index) =>
       <div key={index} className={index == cur ? 'expr-row expr-row-cur' : 'expr-row'}>
@@ -191,7 +193,7 @@ class Expr extends React.Component {
     this.props.setCounter(cur, ok)
 
     if (cur == total) {
-      this.stop()
+      this.stop(cur)
     }
   }
 
@@ -212,7 +214,6 @@ class Expr extends React.Component {
       this.start()
     },
     'stop': () => {
-      console.log('stop')
       this.stop()
     },
   }
@@ -241,7 +242,6 @@ class Expr extends React.Component {
   }
   onChangeOpNum = (value) => {
     const opNum = parseInt(value)
-    console.log(opNum);
     this.setState({opNum})
   }
   onChangeOp = (op) => {
@@ -255,10 +255,9 @@ class Expr extends React.Component {
     const cur = this.props.cur
     const total = this.props.total
     const stop = this.props.stop
-    let low = cur < 5 ? 0 : cur - 5
-    const upper =  low + 10 > total ? total : low + 10
-    low  =  upper - 10 >= 0 ? upper - 10 : low
-
+    const page = Math.floor(cur / 10)
+    const low = page * 10
+    const upper = low + 10 > total ? total : low + 10
     const cur_index = cur - low
 
     let exprs = this.state.expressions.toJS().slice(low , upper).map((item, index) => 
@@ -347,7 +346,7 @@ class Expr extends React.Component {
               </div>
               {exprs}
               <div className='expr-row'>
-                <Button type='primary' onClick={this.stop} style={{width:'100%'}}>提交</Button>
+                <Button type='primary' onClick={this.stop} style={{width:'100%', marginTop:'50px'}}>提交</Button>
               </div>
             </div>}
         </div>
