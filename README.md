@@ -1,6 +1,6 @@
 # 给小朋友做的算术练习
 
-[demo](http://www.yubo.org/ss.html)
+[demo](https://www.yubo.org/ss/index.html)
 
 #### install
 
